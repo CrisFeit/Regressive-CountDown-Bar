@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css?family=Cinzel+Decorative:400,900&display=swap" rel="stylesheet">
+  <title>Regressive Countdown</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cinzel Decorative', serif;
+    }
+
+    .content {
+      display: flex;
+      flex-flow: column wrap;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+      height: 100vh;
+      background: rgb(0.7, 0.7, 0.7);
+    }
+
+    .time-title {
+      text-align: center;
+      margin: auto;
+      font-size: 30px;
+    }
+
+    .countdown {
+      margin: auto;
+      width: 100vw;
+      font-size: 30vw;
+      margin: auto;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      height: auto;
+      flex-wrap: wrap;
+      text-align: center;
+      color: rgb(0, 161, 241);
+    }
+
+    .day {
+      white-space: nowrap;
+      height: auto;
+      width: 100%;
+      font-size: 25px;
+      margin-bottom: 3%;
+      background: linear-gradient(135deg, rgba(0, 161, 241, 0.8), rgba(0, 161, 241, 0.2), rgba(0, 161, 241, 0.8), rgba(0, 161, 241, 0.2), rgba(0, 161, 241, 0.8));
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .time {
+      display: inline-block;
+      width: 40px;
+    }
+
+    .time-left {
+      width: 100%;
+      font-size: 24px;
+      margin-bottom: 5%;
+    }
+
+    .time-title,
+    .time-left {
+      white-space: nowrap;
+      background: linear-gradient(135deg, rgba(0, 161, 241, 0.8), rgba(0, 161, 241, 0.2), rgba(0, 161, 241, 0.8), rgba(0, 161, 241, 0.2), rgba(0, 161, 241, 0.8));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      background-size: 300% 300%;
+      -webkit-animation: camuflage 6s linear infinite;
+      animation: camuflage 6s linear infinite;
+    }
+
+    .numbers {
+      width: 100%;
+      margin: auto;
+      font-size: 31px;
+      white-space: nowrap;
+      background: linear-gradient(135deg, rgba(0, 161, 241, 0.8), rgba(0, 161, 241, 0.2), rgba(0, 161, 241, 0.8), rgba(0, 161, 241, 0.2), rgba(0, 161, 241, 0.8));
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .bar {
+      width: 300px;
+      margin: 5% auto 0;
+      height: 10px;
+      background-color: #f5f5f5;
+      box-shadow: 0 0 5px 1px #f5f5f5;
+      border-radius: 3px;
+    }
+
+    .regress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(to right, black, #00a1f1, black) center/ 100% 100% no-repeat;
+      box-sizing: border-box;
+      z-index: 1;
+      box-shadow: 0 0 10px 1px #00a1f1;
+      animation: pulse 1s linear infinite;
+    }
+
+    @keyframes camuflage {
+      from {
+        background-position: 100% 50%;
+      }
+
+      to {
+        background-position: -50% 50%;
+      }
+    }
+
+    @keyframes pulse {
+      from {
+        opacity: 0.7;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+      <main class="content">
+        <div id="countdown"  class="countdown">
+          <section class="day" title="">             
+          </section><p class="time-left">time left</p>
+        <div class="numbers"> <span id="js--hour" class="time">00</span> : <span id="js--min" class="time">00</span><span> : </span><span id="js--sec" class="time">00</span>
+      </div>
+        <div id="js--bar" class="bar">
+          <div id="js--regress-bar" class="regress-bar"></div>
+        </div>
+      </div> 
+      </main>
+  <script>
+{
+    var hour = document.getElementById("js--hour");
+    var min = document.getElementById("js--min");
+    var sec = document.getElementById("js--sec");
+    var bar = document.getElementById("js--bar");
+    var regress = document.getElementById("js--regress-bar");
+    var el = document.querySelector('.day');
+
+    var date = new Date();
+    var mes = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    
+    var month = ["January" , "February" , "March" , "April", "May",
+        "June", "July", "August", "September", "October",
+        "November", "December"]
+
+    var fullDate = [date.getDate(), mes[date.getMonth()], date.getFullYear()].join(' de ')
+    var begin = new Date(month[date.getMonth()] + date.getDate() + ',' + date.getFullYear() + ' 00:00:00').getTime();
+    var end = new Date(month[date.getMonth()] + date.getDate() + ',' + date.getFullYear() + ' 23:59:59').getTime();
+    el.innerText = fullDate;
+    console.log(date.getMonth())
+    var time = Math.round((end - begin) / 1000);
+
+    var move = function move(timeLeft) {
+      var progressBarWidth = timeLeft * 100 / time;
+      regress.style.width = progressBarWidth + '%';
+    };
+
+    var timer = setInterval(function () {
+      var nowDate = new Date().getTime();
+      var nowSeconds = Math.round((end - nowDate) / 1000);
+      var remain = end - nowDate;
+
+      var h = Math.floor(remain % (1000 * 60 * 60 * 24) / (1000 * 60 * 60));
+      var m = Math.floor(remain % (1000 * 60 * 60) / (1000 * 60));
+      var s = Math.floor(remain % (1000 * 60) / 1000);
+      if (h < 10) hour.textContent = "0" + h; else hour.textContent = h;
+      if (m < 10) min.textContent = "0" + m; else min.textContent = m;
+      if (s < 10) sec.textContent = "0" + s; else sec.textContent = s;
+
+      move(nowSeconds);
+
+    }, 1000);
+}
+
+  </script>
+</body>
+
+</html>
